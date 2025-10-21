@@ -1,1 +1,94 @@
-<p>product-edit-component works!</p>
+<h1 class="text-2xl font-bold mb-4">{{ isEdit ? 'Editar Producto' : 'Nuevo Producto' }}</h1>
+
+<form class="flex flex-wrap gap-4 p-4 mat-elevation-z2" [formGroup]="form" (submit)="persist()">
+  <div [hidden]="true">
+    <mat-form-field appearance="outline">
+      <mat-label>ID Producto</mat-label>
+      <input matInput formControlName="idProduct">
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="fill" class="w-full md:w-[calc(50%-0.5rem)]">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="name" required>
+    <mat-error *ngIf="form.get('name')?.hasError('required')">El nombre es **requerido**</mat-error>
+    <mat-error *ngIf="form.get('name')?.hasError('minlength')">Debe tener al menos 3 caracteres</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full md:w-[calc(50%-0.5rem)]">
+    <mat-label>Presentación</mat-label>
+    <input matInput formControlName="presentation" required>
+    <mat-error *ngIf="form.get('presentation')?.hasError('required')">La presentación es **requerida**</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>Descripción</mat-label>
+    <textarea matInput formControlName="description" required rows="2"></textarea>
+    <mat-error *ngIf="form.get('description')?.hasError('required')">La descripción es **requerida**</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full md:w-[calc(33.33%-0.66rem)]">
+    <mat-label>Precio Unitario</mat-label>
+    <input matInput type="number" formControlName="unitPrice" required>
+    <mat-icon matPrefix>attach_money</mat-icon>
+    <mat-error *ngIf="form.get('unitPrice')?.hasError('required')">El precio es **requerido**</mat-error>
+    <mat-error *ngIf="form.get('unitPrice')?.hasError('min')">Debe ser mayor a cero</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full md:w-[calc(33.33%-0.66rem)]">
+    <mat-label>Stock</mat-label>
+    <input matInput type="number" formControlName="stock" required>
+    <mat-error *ngIf="form.get('stock')?.hasError('required')">El stock es **requerido**</mat-error>
+    <mat-error *ngIf="form.get('stock')?.hasError('min')">El stock no puede ser negativo</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full md:w-[calc(33.33%-0.66rem)]">
+    <mat-label>Fecha de Expiración</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="expired" required>
+    <mat-hint>AAAA-MM-DD</mat-hint>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <mat-error *ngIf="form.get('expired')?.hasError('required')">La fecha de expiración es **requerida**</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full md:w-[calc(33.33%-0.66rem)]">
+    <mat-label>Categoría</mat-label>
+    <mat-select formControlName="category" required [compareWith]="compareObject">
+      <mat-option *ngFor="let cat of (categories$ | async)" [value]="cat">
+        {{ cat.name }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.get('category')?.hasError('required')">La categoría es **requerida**</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full md:w-[calc(33.33%-0.66rem)]">
+    <mat-label>Familia</mat-label>
+    <mat-select formControlName="family" required [compareWith]="compareObject">
+      <mat-option *ngFor="let fam of (families$ | async)" [value]="fam">
+        {{ fam.name }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.get('family')?.hasError('required')">La familia es **requerida**</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full md:w-[calc(33.33%-0.66rem)]">
+    <mat-label>Laboratorio</mat-label>
+    <mat-select formControlName="laboratory" required [compareWith]="compareObject">
+      <mat-option *ngFor="let lab of (laboratories$ | async)" [value]="lab">
+        {{ lab.name }}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.get('laboratory')?.hasError('required')">El laboratorio es **requerido**</mat-error>
+  </mat-form-field>
+
+  <div class="flex gap-2 w-full mt-4 justify-end">
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+      <mat-icon>done</mat-icon>
+      <span>Guardar</span>
+    </button>
+    <button mat-stroked-button color="warn" routerLink="/pages/product" type="button">
+      <mat-icon>cancel</mat-icon>
+      <span>Cancelar</span>
+    </button>
+  </div>
+</form>
